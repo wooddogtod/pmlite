@@ -332,7 +332,7 @@
   </div>
 
   <div id="grid">
-    <a class="gumroad-button" id="upgradeBanner" href="https://wooddog.gumroad.com/l/stagelines">Unlock 20+ categories, custom lines & more &rarr;</a>
+    <a id="upgradeBanner" href="https://wooddog.gumroad.com/l/stagelines" target="_blank" rel="noopener">Unlock 20+ categories, custom lines & more &rarr;</a>
     <div id="recentRow"></div>
     <div id="reorderHint">Press and hold a category to rearrange</div>
     <div id="cats"></div>
@@ -383,7 +383,7 @@
 
     <div id="settingsFooter">
       <div class="lcount" style="margin-bottom:10px;">Enjoying this? The full version has 20+ categories, custom categories, Favorites, and more.</div>
-      <a class="gumroad-button primaryBtn" href="https://wooddog.gumroad.com/l/stagelines" style="display:block; text-align:center; text-decoration:none; margin-bottom:16px;">Upgrade to Full Version</a>
+      <a class="primaryBtn" href="https://wooddog.gumroad.com/l/stagelines" target="_blank" rel="noopener" style="display:block; text-align:center; text-decoration:none; margin-bottom:16px;">Upgrade to Full Version</a>
       <button id="exportBtn" class="footerLink">Export Settings</button>
       <span class="footerDot">·</span>
       <button id="importBtn" class="footerLink">Import Settings</button>
@@ -1010,6 +1010,7 @@ function openCategory(cat){
 
 function renderList(){
   listItems.innerHTML = '';
+  listItems.scrollTop = 0;
   const isFav = currentCat === FAV_KEY;
   const isMostUsed = currentCat === MOST_USED_KEY;
   const readOnly = true; // Lite: no adding/editing/deleting lines anywhere
@@ -1317,6 +1318,5 @@ document.getElementById('welcomeStart').addEventListener('click', ()=>{
   document.getElementById('welcomeScreen').classList.remove('show');
 });
 </script>
-<script src="https://gumroad.com/js/gumroad.js"></script>
 </body>
 </html>
