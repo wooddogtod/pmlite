@@ -871,7 +871,7 @@ function attachDragHandlers(el, cat){
   });
 }
 
-function attachLineDragHandlers(el){
+function attachLineDragHandlers(el, onTap){
   el.addEventListener('pointerdown', (e)=>{
     if(e.pointerType === 'mouse' && e.button !== 0) return;
     if(e.target.closest('.starBtn') || e.target.closest('.delLine')) return;
@@ -913,6 +913,8 @@ function attachLineDragHandlers(el){
       if(longPressFired && reorderState){
         await endReorder();
         saveLineOrder();
+      } else if(!cancelled && onTap){
+        onTap(e);
       }
       scrollDrag = null;
     }
@@ -1052,10 +1054,7 @@ function renderList(){
     card.innerHTML = (label ? `<span class="label">${label}</span>` : '') + text + (isMostUsed ? `<span class="label" style="display:block; margin-top:6px; color:var(--dim);">Used ${item.count}x</span>` : '');
     card.dataset.lineText = text;
     card.dataset.lineCat = lineCat;
-    if(!isMostUsed) attachLineDragHandlers(card);
-
-    card.addEventListener('click', (e)=>{
-      if(e.target.closest('.delLine')) return;
+    if(!isMostUsed) attachLineDragHandlers(card, (e)=>{
       used[key] = !used[key];
       card.classList.toggle('used');
       if(used[key]){
