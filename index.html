@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Stage Lines</title>
-<link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<title>Stage Lines Lite</title>
+<link rel="manifest" href="manifest-lite.json">
+<link rel="apple-touch-icon" href="apple-touch-icon-lite.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Stage Lines">
+<meta name="apple-mobile-web-app-title" content="Stage Lines Lite">
 <meta name="theme-color" content="#0a0a09">
 <style>
   :root{
@@ -65,14 +65,6 @@
   }
   #welcomeStart{ width:100%; max-width:260px; }
 
-  #accessGate{
-    display:flex; position:fixed; inset:0; z-index:300; background:var(--bg);
-    flex-direction:column; align-items:center; justify-content:center;
-    text-align:center; padding:32px;
-  }
-  #accessGate.hide{ display:none; }
-  #accessCodeInput{ margin-bottom:12px; }
-
   /* ---- HEADER ---- */
   #header{
     flex-shrink:0; display:flex; align-items:center; justify-content:space-between;
@@ -103,6 +95,11 @@
 
   /* ---- GRID VIEW ---- */
   #grid{ flex:1; display:flex; flex-direction:column; overflow:hidden; }
+  #upgradeBanner{
+    display:block; margin:12px 16px 0 16px; padding:12px 16px; text-align:center;
+    background:var(--accent); color:var(--bg); text-decoration:none;
+    border-radius:10px; font-weight:700; font-size:14px;
+  }
   #recentRow{
     flex-shrink:0; display:flex; gap:8px; overflow-x:auto;
     padding:10px 16px 0 16px; -webkit-overflow-scrolling:touch;
@@ -132,7 +129,7 @@
     .cat .name{ font-size:calc(var(--line-font-size) * 0.6); }
     .cat .count{ font-size:10px; margin-top:4px; }
     #listItems{ padding:8px 16px 16px 16px; gap:6px; }
-    .lineCard{ padding:12px 16px 40px 16px; font-size:calc(var(--line-font-size) * 0.82); }
+    .lineCard{ padding:12px 40px 12px 16px; font-size:calc(var(--line-font-size) * 0.82); }
   }
   .cat{
     background:var(--card); border:1px solid var(--line); border-radius:10px;
@@ -160,7 +157,7 @@
   }
   .lineCard{
     background:var(--card); border:1px solid var(--line); border-radius:10px;
-    padding:16px 18px 46px 18px; text-align:left; color:var(--ink);
+    padding:16px 18px; text-align:left; color:var(--ink);
     font-size:var(--line-font-size); font-weight:500; line-height:1.4;
     transition:color .15s ease, background .15s ease, border-color .15s ease;
     position:relative; touch-action:none;
@@ -180,26 +177,14 @@
     margin-top:8px; opacity:0.8;
   }
   .lineCard.used .label{ color:var(--used-ink); }
-  .cardActions{
-    position:absolute; bottom:8px; right:8px; display:flex; gap:2px;
+  .lineCard .starBtn{
+    position:absolute; top:10px; right:8px; background:none; border:none;
+    color:var(--accent); font-size:19px; padding:4px 6px; line-height:1;
   }
-  .cardActions button{
-    background:none; border:none; padding:6px 8px; line-height:1;
+  .lineCard .delLine{
+    position:absolute; bottom:6px; right:8px; background:none; border:none;
+    color:var(--dim); font-size:15px; padding:4px 8px;
   }
-  .cardActions .starBtn{ color:var(--accent); font-size:calc(var(--line-font-size) * 0.75); }
-  .cardActions .editBtn{ color:var(--dim); font-size:calc(var(--line-font-size) * 0.87); }
-  .cardActions .delLine{ color:var(--dim); font-size:calc(var(--line-font-size) * 0.97); }
-  .lineEditBox{
-    width:100%; background:var(--card); border:1px solid var(--accent); border-radius:8px;
-    color:var(--ink); font-size:var(--line-font-size); font-family:inherit;
-    padding:10px 12px; resize:vertical; min-height:70px;
-  }
-  .lineEditActions{ display:flex; gap:8px; margin-top:10px; }
-  .lineEditActions button{
-    flex:1; border-radius:8px; padding:10px; font-weight:700; font-size:14px; border:none;
-  }
-  .lineEditSave{ background:var(--accent); color:var(--bg); }
-  .lineEditCancel{ background:none; border:1px solid var(--line) !important; color:var(--ink); }
   .cat.favTile{ border-color:var(--accent); }
   #addLineRow{
     display:flex; gap:8px; padding:4px 0 12px 0;
@@ -336,23 +321,12 @@
 <body>
 <div id="app">
 
-  <div id="accessGate">
-    <div id="welcomeMark">
-      <svg width="34" height="34" viewBox="0 0 24 24" fill="none"><rect x="3" y="9" width="3" height="10" rx="1.5" fill="currentColor"/><rect x="10.5" y="4" width="3" height="15" rx="1.5" fill="currentColor"/><rect x="18" y="12" width="3" height="7" rx="1.5" fill="currentColor"/></svg>
-    </div>
-    <div id="welcomeTitle">Stage Lines</div>
-    <div id="welcomeTagline" style="margin-bottom:20px;">Enter your access code to unlock the app.</div>
-    <input id="accessCodeInput" class="textInput" placeholder="Access code" style="max-width:260px; text-align:center;" autocapitalize="off" autocorrect="off">
-    <div id="accessCodeError" style="display:none; color:#d1495b; font-size:13px; margin-bottom:14px;">That code isn't right. Check it and try again.</div>
-    <button id="accessCodeSubmit" class="primaryBtn" style="max-width:260px;">Unlock</button>
-  </div>
-
   <div id="welcomeScreen">
     <div id="welcomeMark">
       <svg width="34" height="34" viewBox="0 0 24 24" fill="none"><rect x="3" y="9" width="3" height="10" rx="1.5" fill="currentColor"/><rect x="10.5" y="4" width="3" height="15" rx="1.5" fill="currentColor"/><rect x="18" y="12" width="3" height="7" rx="1.5" fill="currentColor"/></svg>
     </div>
-    <div id="welcomeTitle">Stage Lines</div>
-    <div id="welcomeTagline">Built from 25+ years of gigging.<br>Say it right, every night.</div>
+    <div id="welcomeTitle">Stage Lines Lite</div>
+    <div id="welcomeTagline">Six core categories, free to use at every gig.<br>The full version has 20+ categories, custom lines, and more.</div>
     <button id="welcomeStart" class="primaryBtn">Get Started</button>
   </div>
 
@@ -363,6 +337,7 @@
   </div>
 
   <div id="grid">
+    <a id="upgradeBanner" href="https://wooddog.gumroad.com/l/stagelines" target="_blank" rel="noopener">Unlock 20+ categories, custom lines & more &rarr;</a>
     <div id="recentRow"></div>
     <div id="reorderHint">Press and hold a category to rearrange</div>
     <div id="cats"></div>
@@ -381,25 +356,17 @@
       <button class="tabBtn active" data-tab="library">Library</button>
       <button class="tabBtn" data-tab="mylines">My Lines</button>
       <button class="tabBtn" data-tab="display">Display</button>
-      <button class="tabBtn" data-tab="practice">Practice</button>
     </div>
     <div id="settingsBody">
 
       <div class="tabPane active" id="pane-library">
-        <div class="sectionLabel">Gig Profiles</div>
-        <div id="profilesList" style="margin-bottom:10px;"></div>
-        <button id="saveProfileBtn" class="primaryBtn" style="background:none; border:1px solid var(--line); color:var(--ink); margin-bottom:4px;">Save Current As Profile</button>
-        <div class="lcount" style="margin-bottom:14px;">Save your current on/off toggles as a named profile, like "Wedding" or "Pub Gig", then switch between them in one tap.</div>
-
         <div class="sectionLabel">Default categories</div>
         <div id="libraryList"></div>
       </div>
 
       <div class="tabPane" id="pane-mylines">
-        <div class="sectionLabel">Add a category</div>
-        <input id="newCatName" class="textInput" placeholder="Category name, e.g. Sound Problems">
-        <button id="newCatBtn" class="primaryBtn">Add Category</button>
-        <div class="sectionLabel">Your categories</div>
+        <div class="sectionLabel">Custom categories</div>
+        <div class="lcount" style="margin-bottom:8px;">Custom categories, adding your own lines, and Favorites are part of the full version of Stage Lines. This Lite version gives you the six core categories to try, exactly as they'd work in the full app.</div>
         <div id="customList"></div>
       </div>
 
@@ -417,35 +384,11 @@
         <div class="themeGrid" id="themeGrid"></div>
       </div>
 
-      <div class="tabPane" id="pane-practice">
-        <div class="sectionLabel">Practice Room</div>
-        <div class="lcount" style="margin-bottom:14px;">A quick scenario. Think of your own reply, then reveal what the app would say. Skip to see another option, or favourite the one that fits best, it'll move to the top of that category so it's the first thing you see at a real gig.</div>
-        <div id="practiceIdle">
-          <button id="practiceStartBtn" class="primaryBtn">Start a Scenario</button>
-        </div>
-        <div id="practiceActive" style="display:none;">
-          <div class="customCard" style="margin-bottom:14px;">
-            <div id="practiceScenarioText" style="font-size:var(--line-font-size); line-height:1.5;"></div>
-          </div>
-          <button id="practiceRevealBtn" class="primaryBtn">Reveal Answer</button>
-          <div id="practiceReveal" style="display:none;">
-            <div class="sectionLabel">The app would say:</div>
-            <div class="customCard">
-              <div id="practiceRevealText" style="font-size:var(--line-font-size); line-height:1.5;"></div>
-            </div>
-            <div id="practiceFavConfirm" class="lcount" style="display:none; color:var(--accent); margin-bottom:10px;"></div>
-            <div style="display:flex; gap:8px; margin-bottom:10px;">
-              <button id="practiceFavBtn" class="primaryBtn" style="flex:1; background:none; border:1px solid var(--accent); color:var(--accent);">★ Favourite This</button>
-              <button id="practiceSkipBtn" class="primaryBtn" style="flex:1; background:none; border:1px solid var(--line); color:var(--ink);">Skip - Another</button>
-            </div>
-          </div>
-          <button id="practiceNextBtn" class="primaryBtn" style="margin-top:4px; display:none;">Next Scenario</button>
-        </div>
-      </div>
-
     </div>
 
     <div id="settingsFooter">
+      <div class="lcount" style="margin-bottom:10px;">Enjoying this? The full version has 20+ categories, custom categories, Favorites, and more.</div>
+      <a class="primaryBtn" href="https://wooddog.gumroad.com/l/stagelines" target="_blank" rel="noopener" style="display:block; text-align:center; text-decoration:none; margin-bottom:16px;">Upgrade to Full Version</a>
       <button id="exportBtn" class="footerLink">Export Settings</button>
       <span class="footerDot">·</span>
       <button id="importBtn" class="footerLink">Import Settings</button>
@@ -510,140 +453,6 @@ const DEFAULTS = {
     "You're stunned. I get it. Happens a lot.",
     "Just blink twice if you're here against your will"
   ],
-  "Heckler": [
-    "Interesting take. I'll be ignoring it with the same energy you gave it.",
-    "I appreciate the passion, I just don't share it.",
-    "We'll let it slide. Alcohol's got a strong opinion tonight, and he's just the delivery method.",
-    "I'll trade you spots for one song. Let's see how brave that opinion is up close.",
-    "He's clearly got a lot to say. Someone get him a stool and a setlist.",
-    "I heard that, and I've chosen to move on with my life.",
-    "I heard you. I'm still playing. Those two things can both be true.",
-    "Cool story. Anyway, here's another one.",
-    "I'll be over here, still doing the gig, if you need me.",
-    "I want to check in with whoever's sitting next to him, because that's a rough night for them too.",
-    "His mates didn't sign up for this. Genuine sympathy for whoever drove tonight.",
-    "The silence from his own table is doing more damage than anything I could say.",
-    "That's your opinion, and it's staying that way, over there, with you.",
-    "I'll take that as enthusiasm, since the alternative's more effort than it's worth.",
-    "I see you've decided the whole room needed to hear that, personally, out loud, right now.",
-    "That's the loudest cry for attention I've heard since my own soundcheck.",
-    "You've got the room's attention now. Not sure what you're going to do with it, but you've got it."
-  ],
-  "Requests": [
-    "Feel free to request something… I love that brief moment of hope before I say no.",
-    "Happy to take requests… just remember, this is a one-man operation, not Spotify.",
-    "It's on my list, right up there with get my life together and ween myself off YouTube",
-    "It's on my list, right up there with get my life together and learn to cook something other than a chicken stirfry.",
-    "It's on my list, right up there with get my life together and alphabetise my spice rack.",
-    "Any requests? I like to think of this as a democracy that I get final veto power over.",
-    "Feel free to ask for something. I've got a whole set list I'm ready to abandon for the right song.",
-    "Anyone got a request? I'll need a name, a title, and realistic expectations.",
-    "Anyone got a request? This is genuinely the one part of the night I don't control.",
-    "Feel free to ask for something. I'll either play it or explain very confidently why I can't.",
-    "Anyone got a song in mind? Speak now, or accept whatever I've already half-decided on."
-  ],
-  "Don't Know It": [
-    "I don't know that one… but if you hum it, I'll still say no.",
-    "I don't know it… I like to keep a little mystery between me and disappointment.",
-    "I don't know it… but I can play something that will make you forget you asked.",
-    "That song and I had a falling out. I don't want to talk about it.",
-    "I've now been asked for 3 songs I don't know, and the answer has aged beautifully.",
-    "Not doing that one. But I will absolutely stand here and absorb your disappointment.",
-    "It's in my head somewhere, right next to my password for MySpace",
-    "I don't know it, and I don't want to ruin it for you forever.",
-    "Played it, but in a different key… and also a different song."
-  ],
-  "Requests: Same Genre": [
-    "I see the lane you're in. I'm just not licensed for it.",
-    "I love the commitment to the genre.",
-    "I admire how confidently you're ignoring my skill set.",
-    "I feel like I'm being gently recruited.",
-    "You've made your taste extremely clear. I just don't have the wardrobe for it.",
-    "There's no amp behind me capable of what you're asking for.",
-    "I don't know how to break this to you, but nothing about tonight has said \"brutal death metal\" so far.",
-    "Look at the stage. Look at me. Now look at what you just requested. See the gap.",
-    "I don't do heavy metal, mostly because I'd need a second guitarist, a drummer, and considerably more hair.",
-    "I'm flattered you think three chords and a capo can carry a genre that requires actual rage.",
-    "You've asked so consistently I'm starting to think you know I can't do it and you're just enjoying the process.",
-    "At this point saying no to you has become its own recurring bit, and it might be my strongest material tonight."
-  ],
-  "Requests: Same Song": [
-    "What are your ears painted on or something?",
-    "That's the third time you've asked. I'm flattered, but also slightly concerned.",
-    "Same song, same request, same me saying maybe later.",
-    "I'm starting to think you just like saying the title out loud at this point.",
-    "That's twice now. I'm not playing hard to get, I'm just playing something else.",
-    "I'm going to need you to ask a third time before I even consider pretending to think about it.",
-    "You keep asking like the answer's going to change if you say it slower.",
-    "That request hasn't gotten any more likely to happen since the last time you made it.",
-    "I don't know it any better this time than I did the last two times you asked.",
-    "Asking again doesn't unlock a hidden version of me that suddenly knows the song.",
-    "I promise I'm not secretly saving it for later. I genuinely just don't know it.",
-    "The information hasn't changed since you last asked. I still don't have it.",
-    "There's no version of tonight where the fourth ask works better than the first three.",
-    "I'd need to learn an entire new song between now and the next time you ask, and I haven't managed that yet.",
-    "I'm flattered you think I can learn a new song while playing another one live, but my talents stop short of that.",
-    "I appreciate the confidence that I could learn a new song mid-performance, I just won't shatter that illusion tonight.",
-    "You clearly think I can learn a song in real time while playing another one, I wish that were true. It is not.",
-    "I love that you think I've got a hidden setting where I learn new material mid-performance. I don't."
-  ],
-  "Requests: Phone": [
-    "I don't read screens mid-song. Hold that thought, and possibly the phone, a bit longer.",
-    "That's a very bright rectangle you're showing me in a very dark room. I'll process it once my eyes recover.",
-    "You've basically handed me a pop quiz mid-performance, and I did not study.",
-    "I appreciate the faith that I'm secretly a fully licensed streaming service, but I'm one man and a guitar.",
-    "That app has about ninety million songs on it. I have considerably fewer.",
-    "Whatever's on that screen took a team of engineers and a server farm. I've got a capo and a rough memory.",
-    "That phone can access every song ever recorded. I can access maybe four hundred, on a good day."
-  ],
-  "Requests: Multiple": [
-    "Okay… this is starting to feel personal.",
-    "You've discovered the exact three songs I don't know. Impressive",
-    "We're on a streak. Not a good one. Let me play one I do know before my reputation collapses."
-  ],
-  "Requests: Young": [
-    "My version of that song sounds like if your dad joined a boy band.",
-    "I'd play that, but then I'd have to get a haircut that says 'I still believe in my dreams.'",
-    "I'd need a TikTok dance team and a ring light for that one.",
-    "I'm like a jukebox from 1987 - limited selection and no Wi-Fi updates.",
-    "Sorry, I don't have the youth update installed yet.",
-    "That's a great song. You should request it at a better gig.",
-    "I'd love to play that, but my Spotify peaked in 1998."
-  ],
-  "Requests: Disappointed": [
-    "I'm protecting your memory of that song.",
-    "I get it. I've disappointed my parents too.",
-    "That one hurt you more than it hurt me",
-    "Sorry, I'm not AI. I have storage limits.",
-    "Think of the human brain more like a folder rather than library"
-  ],
-  "Astonished": [
-    "You'd think I told you Christmas was cancelled. It's a (___) song. We'll get through this together.",
-        "I'm not streaming. I'm remembering. Those are very different technologies.",
-    "Spotify's trained you to think every song's one tap away, meet the limits of a human brain.",
-    "That's fine, take a moment. I'll wait here while you recalibrate your entire opinion of me over one (____) song.",
-    "You looked at me like you just licked a car battery. I promise the actual damage here is minimal.",
-    "You looked at me like you just stepped on a Lego brick. I know it stings, but you will, in fact, walk again.",
-    "You looked at me like you just smelled a gas leak, but it's fine, disappointment dissipates the same way.",
-    "I've noticed the outrage reflex works fine. It's just the applause reflex that seems to be broken.",
-    "The bar's been set by an app with unlimited storage and no bladder, please recalibrate expectations accordingly."
-  ],
-  "Bands": [
-    { label:"Pearl Jam", text:"I don't do Pearl Jam. I've made my peace with that. Eddie Vedder has not been informed but I think he'd understand." },
-    { label:"Foo Fighters", text:"I tried Best of You once. The key alone nearly ended my career." },
-    { label:"Metallica", text:"I don't do Metallica, not because I don't love it, I respect it too much to do what would happen up here." },
-    { label:"AC/DC", text:"AC/DC fans are the most optimistic requesters in the room, absolute faith, touching, but completely misplaced." },
-    { label:"Queen", text:"I don't do Queen. Freddie set a bar I'm not stepping anywhere near." },
-    { label:"Black Sabbath", text:"I'd need a different venue, a different crowd, and possibly an exorcism." },
-    { label:"Snoop Dogg", text:"Half his songs need a disclaimer and a different kind of smoke machine." },
-    { label:"Limp Bizkit", text:"I don't do Limp Bizkit. Mainly because there's a nine-year-old doing a jigsaw at table six." },
-    { label:"Pantera", text:"Great riffs, terrible fit for a room where someone's nan is doing the crossword." },
-    { label:"Justin Bieber", text:"I peaked musically around the time he was still in primary school. The math doesn't work in my favour." },
-    { label:"Taylor Swift", text:"I don't do Taylor Swift. Not a skill issue, a decades issue." },
-    { label:"Michael Jackson", text:"I respect the legacy too much to hand it to you via a bloke who pulls his back reaching for a high shelf." },
-    { label:"Pink Floyd", text:"I don't do Pink Floyd. Some of those songs run twenty-three minutes and I've got a schnitzel getting cold somewhere." },
-    { label:"Van Halen", text:"That guitar solo took Eddie years to perfect. I've had this instrument since Tuesday." }
-  ],
   "Tips": [
     "Tips are welcome. Applause is emotionally satisfying but legally useless.",
     "I do take tips… mostly to prove to my family this is a real job.",
@@ -656,67 +465,6 @@ const DEFAULTS = {
     "Yes there's a tip jar here. It funds my ongoing research into local beverages.",
     "Tip jar's here. It's basically applause you can fold.",
     "There's a tip jar up here. It's currently as empty as my confidence after that last silence."
-  ],
-  "Random Stuff": [
-    "This next song contains several chords.",
-    "This next song is for everyone who likes the thrill of hearing the same chord progression… over and over.",
-    "So a dyslexic man walks into a bra.",
-    "Bought a friend a fridge for his birthday. You should have seen his face light up when he opened it. Xx",
-    "Also happy 10th birthday to my Tinder profile pic.",
-    "I joined a dating site for people my age, it's called Carbon Dating.",
-    "The great thing about dating a woman my own age is I don't have to worry about meeting her parents.",
-    "I've been doing this a long time. Not successfully… just a long time.",
-    "This was not my childhood dream, but I'm committed now.",
-        "My girlfriend isn't talking to me. She said I ruined her birthday. I didn't even know it was her birthday.",
-        "I ordered a chicken and an egg from Amazon. I'll let you know.",
-    "I've spent roughly as much time waiting for a song request I actually know as most people spend at red lights."
-  ],
-  "Drinks": [
-    "If you're on your third drink we're having a great night, if you're on your first, give it time, I've got two sets.",
-    "Alcohol is the only thing that makes small talk feel productive.",
-    "Enjoy your drinks guys. They do a lot of heavy lifting for me.",
-    "Every round you buy makes my songs sound slightly better. That's not an opinion, that's just how alcohol works.",
-    "The house red at most pubs tastes like it was aged in the same barrel as the carpet.",
-    "Red wine's apparently bad for the voice, and so is covering Oasis at volume, I've made peace with contradictions.",
-    "I switched to wine thinking I'd have more control, instead I've fast-tracked the same outcome with better presentation.",
-    "One glass of red is doing the work of about three beers, and my playing by the second set can confirm it.",
-    "Red wine has a tipping point where my banter goes from \"prepared\" to \"unsupervised,\" fast."
-  ],
-  "Food": [
-    "I hope you're enjoying the food. I like to eat out. Mainly because I've proven I can't be trusted with groceries.",
-    "That chewing has excellent rhythm. Consider joining the band.",
-    "I always order food thinking about my future self… and then completely ignore him.",
-    "Whoever's eating the garlic bread, I can see you, I'm not angry, just disappointed that it's not mine.",
-    "There's always one person eyeing someone else's parma with more intensity than most people bring to relationships.",
-    "Whoever invented the idea of putting a fried egg on a burger deserves a statue, or at minimum a very firm handshake."
-  ],
-    "Family": [
-    "Nice to have the family here, nothing says relax like the people who remember you wetting the bed.",
-    "My family's here tonight, so if this goes badly it'll be brought up every Christmas basically until I die.",
-    "The family's here tonight. So if you enjoy the show, tell them... because they still think I should've kept a real job.",
-    "Nice to have my niece and nephew here, good for them to see what unemployment looks like with stage lighting.",
-    "I've got a few cousins here tonight. I haven't seen some of them in so long I almost introduced myself.",
-    "My sister's here. So if I get too full of myself, she'll sort that out in the first break.",
-    "My mum's here tonight. So if you enjoy the show, she's taking full credit.",
-    "Good to have my boy here tonight. He still thinks this is a real job, so let's not ruin that for him just yet.",
-    "My son's here tonight. It's nice having someone in the crowd who legally has to pretend I'm funny.",
-    "My son came to watch. Either he loves me... or he needed a lift.",
-    "My daughter's here. If you see her slowly sliding lower in her chair, that's just years of practice.",
-    "She's my biggest supporter... as long as I don't start dancing.",
-    "My dad's watching tonight. No pressure... just decades of expectations.",
-    "My dad's here. He's been supporting me for years. Mostly financially in the beginning.",
-    "My wife/husband's here. It's nice having someone in the crowd who's contractually obligated to tolerate me.",
-    "No pressure, but my father-in-law's watching, and he already thinks I peaked at the wedding.",
-    "I've been dating their daughter for years and I still stand up straighter when her dad walks in.",
-    "My in-laws came to support me, or supervise me, still working out which.",
-    "My mother-in-law's in the crowd, so consider this my annual audition to stay in the will."
-  ],
-  "Feedback": [
-    "I don't know what just happened, but I'm choosing to move past it quickly.",
-    "The feedback and I are not friends, but we do seem to keep running into each other.",
-    "That's just the PA reminding everyone it's technically in charge tonight.",
-    "I've made peace with the fact that the PA gets a say in this performance too.",
-    "That screech is the PA's version of clearing its throat."
   ],
   "End of Set": [
     "Short break. Stretch your legs, check your phone, and don't text your ex.",
@@ -746,89 +494,21 @@ const DEFAULTS = {
     "Confidence in this room's up considerably since I started, I'd love to take credit, it's mostly the bar.",
     "I can see someone doing the math on whether that next drink is a good idea. Statistically, it never is. Get it anyway."
   ],
-  "Encore": [
-    "One more? I've technically already packed up in my head.",
-    "I can do one more, but my enthusiasm's already loaded the car.",
-    "I've got one more song in me, and roughly zero more after that.",
-    "One more, purely because you asked nicely and I have no real backbone."
-  ],
-  "Tuning": [
-    "Bear with me, I'm tuning. This is the least exciting part of the show, and somehow also the most technical.",
-    "Give me a second, one of these strings has decided tonight's the night to have an opinion.",
-    "Tuning up. Think of this as a very small, very boring magic trick.",
-    "Quick tune. Not for me, for you. Nobody wants the alternative.",
-    "Hang tight, I'm having a small, private argument with this instrument.",
-    "This won't take long. Long enough to feel awkward, not long enough to apologise for."
-  ],
-  "First People In": [
-    "Good evening! Please take any seat you like. We've been very selective about attendance so far.",
-    "Welcome in. If anyone asks, you've been here the whole time and I've been amazing.",
-    "You're the first ones here, which makes you my entire target demographic for the next twenty minutes.",
-    "Sit anywhere you like. Consider it a temporary promotion to VIP, purely because nobody else showed up yet.",
-    "It's just us for now, so if I mess up a lyric, we can agree it never happened.",
-    "You beat the crowd here. That's either commitment or you misread the start time. Either way, welcome."
-  ],
-  "Big Screen": [
-    "If I play well you'll remember the song. If I play badly you'll remember the score.",
-    "before playing Gimme One Reason - dedicated to whoever put the performer directly under the 4K distraction machine.",
-    "Every gig has obstacles. Mine is a 75-inch coworker who never takes a break.",
-    "Some venues give you a stage. Some give you a stage and a distraction the size of a garage door.",
-    "I'm just going to pretend you're all looking at me and not the enormous glowing rectangle behind me.",
-    "I'm not competing with the football, I lost that fight the moment they hung a 75-inch screen behind me."
-  ],
-  "Small Crowd": [
-    "Small crowd tonight. Which means if this goes badly, there are fewer witnesses. Silver linings.",
-    "I did a headcount. There's more of you than there are of me, so technically we're still a crowd.",
-    "The bartender's seen this whole set twice now. He's basically in the band at this point.",
-    "Small crowd, big acoustics. Every mistake I make gets its own reverb.",
-    "Don't worry, I've calibrated my ego to room size. Tonight it's very small.",
-    "At this size, if you all leave at once, it just looks like a fire drill."
-  ],
-  "1 or 2 People": [
-    "At this point I'm less performing and more just having a very loud conversation with two people who didn't ask for it.",
-    "At this point I know your drink orders, your names, and your opinions on the last three songs, we're basically a band.",
-    "I've started treating you two as a focus group, and the polite silence so far, I'm calling constructive.",
-    "At this size, if either of you leaves, I lose half my audience, so take your bathroom breaks strategically.",
-    "Thank you sincerely for being here, the alternative tonight was serenading the bar fridge, a tough crowd.",
-    "Appreciate you both showing up, without you it's just me and a very patient bartender who's heard this twice."
+  "Random Stuff": [
+    "This next song contains several chords.",
+    "This next song is for everyone who likes the thrill of hearing the same chord progression… over and over.",
+    "So a dyslexic man walks into a bra.",
+    "Bought a friend a fridge for his birthday. You should have seen his face light up when he opened it. Xx",
+    "Also happy 10th birthday to my Tinder profile pic.",
+    "I joined a dating site for people my age, it's called Carbon Dating.",
+    "The great thing about dating a woman my own age is I don't have to worry about meeting her parents.",
+    "I've been doing this a long time. Not successfully… just a long time.",
+    "This was not my childhood dream, but I'm committed now.",
+        "My girlfriend isn't talking to me. She said I ruined her birthday. I didn't even know it was her birthday.",
+        "I ordered a chicken and an egg from Amazon. I'll let you know.",
+    "I've spent roughly as much time waiting for a song request I actually know as most people spend at red lights."
   ]
 };
-
-const CHALLENGE_SCENARIOS = [
-  { text: "You finish a song and the room stays completely quiet.", category: "No Applause", tier: "common" },
-  { text: "You finish a song and most of the room is still looking at their phones.", category: "No Applause", tier: "common" },
-  { text: "Someone requests a song you don't know.", category: "Don't Know It", tier: "common" },
-  { text: "The same person asks for the same song more than once tonight.", category: "Requests: Same Song", tier: "common" },
-  { text: "The first couple of people have just walked in and sat right in front of you.", category: "First People In", tier: "common" },
-  { text: "There's a game on the screen behind you and most of the room is watching that instead of you.", category: "Big Screen", tier: "common" },
-  { text: "The crowd tonight is very small.", category: "Small Crowd", tier: "common" },
-  { text: "You're finishing your first set and the room is only just starting to warm up.", category: "End of Set", tier: "common" },
-  { text: "Someone asks if you know a song that came out very recently.", category: "Requests: Young", tier: "common" },
-  { text: "Someone in the crowd being annoying.", category: "Heckler", tier: "obscure" },
-  { text: "One person claps once, alone, and no one else joins in.", category: "No Applause", tier: "obscure" },
-  { text: "One couple walks in a few minutes before you're due to start, and the room is otherwise empty.", category: "First People In", tier: "obscure" },
-  { text: "Someone is completely focused on the screen and hasn't looked at you once.", category: "Big Screen", tier: "obscure" },
-  { text: "Someone asks if you take tips.", category: "Tips", tier: "common" },
-  { text: "Someone requests a band you don't play covers of.", category: "Bands", tier: "obscure" },
-  { text: "Someone asks for something heavier than what you've been playing all night.", category: "Requests: Same Genre", tier: "common" },
-  { text: "You're finishing the whole night and a few people ask for one more song.", category: "Encore", tier: "common" },
-  { text: "A younger person requests a song you've never heard of.", category: "Requests: Young", tier: "common" },
-  { text: "Someone looks visibly let down when you can't play their request.", category: "Requests: Disappointed", tier: "common" },
-  { text: "You've only got one or two people in the room tonight.", category: "1 or 2 People", tier: "obscure" },
-  { text: "Someone loudly disagrees with a song choice the moment you start playing it.", category: "Heckler", tier: "common" },
-  { text: "Someone holds their phone up to show you a song request.", category: "Requests: Phone", tier: "common" },
-  { text: "Someone looks annoyed when you don't know their request.", category: "Astonished", tier: "common" },
-  { text: "The room is full, but no one is reacting.", category: "No Applause", tier: "common" },
-  { text: "Someone keeps requesting heavy metal.", category: "Requests: Same Genre", tier: "common" },
-  { text: "You notice people eating while you're playing.", category: "Food", tier: "common" },
-  { text: "You need something to fill a silence between songs.", category: "Random Stuff", tier: "obscure" },
-  { text: "You're tuning your guitar and need something to say.", category: "Tuning", tier: "common" },
-  { text: "You've just finished your first song of the night.", category: "Start of Gig", tier: "common" },
-  { text: "You've just finished a set.", category: "End of Set", tier: "common" },
-  { text: "You've just finished the whole gig.", category: "End of Gig", tier: "common" },
-  { text: "You need to retune between songs.", category: "Tuning", tier: "common" },
-  { text: "You get feedback through the PA.", category: "Feedback", tier: "common" }
-];
 
 const THEMES = [
   { key:"amber", name:"Stage Amber", bg:"#0a0a09", accent:"#e2a33d" },
@@ -854,16 +534,14 @@ function loadConfig(){
       if(!c.removedDefaultLines) c.removedDefaultLines = {};
       if(!c.addedDefaultLines) c.addedDefaultLines = {};
       if(!c.lineOrder) c.lineOrder = {};
-      if(!c.editedDefaultLines) c.editedDefaultLines = {};
       if(typeof c.hasSeenWelcome === 'undefined') c.hasSeenWelcome = true; // existing users never see the new first-run screen
-      if(typeof c.unlocked === 'undefined') c.unlocked = true; // existing users never get gated retroactively
       if(!c.gigProfiles) c.gigProfiles = {};
       if(!c.lineUsageCounts) c.lineUsageCounts = {};
       if(!c.recentCategories) c.recentCategories = [];
       return c;
     }
   }catch(e){}
-  return { disabledDefaults:[], customCategories:{}, fontSize:30, theme:'amber', categoryOrder:[], favorites:[], removedDefaultLines:{}, addedDefaultLines:{}, editedDefaultLines:{}, lineOrder:{}, hasSeenWelcome:false, gigProfiles:{}, lineUsageCounts:{}, recentCategories:[], unlocked:false };
+  return { disabledDefaults:[], customCategories:{}, fontSize:30, theme:'amber', categoryOrder:[], favorites:[], removedDefaultLines:{}, addedDefaultLines:{}, lineOrder:{}, hasSeenWelcome:false, gigProfiles:{}, lineUsageCounts:{}, recentCategories:[] };
 }
 function saveConfig(){ try{ localStorage.setItem(CONFIG_KEY, JSON.stringify(config)); }catch(e){} }
 let config = loadConfig();
@@ -914,17 +592,11 @@ function activeData(){
 function effectiveDefaultLines(cat){
   const base = DEFAULTS[cat] || [];
   const removed = config.removedDefaultLines[cat] || [];
-  const edits = config.editedDefaultLines[cat] || {};
   const added = config.addedDefaultLines[cat] || [];
-  const filtered = base
-    .filter(item=>{
-      const text = typeof item === 'object' ? item.text : item;
-      return !removed.includes(text);
-    })
-    .map(item=>{
-      const text = typeof item === 'object' ? item.text : item;
-      return Object.prototype.hasOwnProperty.call(edits, text) ? edits[text] : item;
-    });
+  const filtered = base.filter(item=>{
+    const text = typeof item === 'object' ? item.text : item;
+    return !removed.includes(text);
+  });
   const combined = filtered.concat(added);
   const order = config.lineOrder[cat];
   if(!order || !order.length) return combined;
@@ -942,49 +614,13 @@ function effectiveDefaultLines(cat){
 }
 function deleteDefaultLine(cat, text){
   const added = config.addedDefaultLines[cat] || [];
-  const addedIdx = added.findIndex(item => (typeof item === 'object' ? item.text : item) === text);
-  if(addedIdx > -1){
-    added.splice(addedIdx,1);
-    saveConfig();
-    return;
+  const idx = added.indexOf(text);
+  if(idx > -1){
+    added.splice(idx,1);
+  } else {
+    if(!config.removedDefaultLines[cat]) config.removedDefaultLines[cat] = [];
+    if(!config.removedDefaultLines[cat].includes(text)) config.removedDefaultLines[cat].push(text);
   }
-  const edits = config.editedDefaultLines[cat] || {};
-  let originalKey = null;
-  for(const k in edits){
-    const vText = typeof edits[k] === 'object' ? edits[k].text : edits[k];
-    if(vText === text){ originalKey = k; break; }
-  }
-  const keyToRemove = originalKey || text;
-  delete edits[keyToRemove];
-  if(!config.removedDefaultLines[cat]) config.removedDefaultLines[cat] = [];
-  if(!config.removedDefaultLines[cat].includes(keyToRemove)) config.removedDefaultLines[cat].push(keyToRemove);
-  saveConfig();
-}
-function updateOrderOnEdit(cat, oldText, newText){
-  const order = config.lineOrder[cat];
-  if(!order) return;
-  const idx = order.indexOf(oldText);
-  if(idx > -1) order[idx] = newText;
-}
-function editDefaultLine(cat, oldText, newText, label){
-  const added = config.addedDefaultLines[cat] || [];
-  const addedIdx = added.findIndex(item => (typeof item === 'object' ? item.text : item) === oldText);
-  const replacement = label ? { label, text:newText } : newText;
-  if(addedIdx > -1){
-    added[addedIdx] = replacement;
-    updateOrderOnEdit(cat, oldText, newText);
-    saveConfig();
-    return;
-  }
-  if(!config.editedDefaultLines[cat]) config.editedDefaultLines[cat] = {};
-  const edits = config.editedDefaultLines[cat];
-  let originalKey = null;
-  for(const k in edits){
-    const vText = typeof edits[k] === 'object' ? edits[k].text : edits[k];
-    if(vText === oldText){ originalKey = k; break; }
-  }
-  edits[originalKey || oldText] = replacement;
-  updateOrderOnEdit(cat, oldText, newText);
   saveConfig();
 }
 function isCustomCat(cat){ return Object.prototype.hasOwnProperty.call(config.customCategories, cat); }
@@ -1069,6 +705,7 @@ function animateReflow(container, selector, mutate){
     }
   });
 }
+
 
 function startReorder({ el, container, selector, pointerId }){
   const rect = el.getBoundingClientRect();
@@ -1254,7 +891,7 @@ function attachDragHandlers(el, cat){
 function attachLineDragHandlers(el, onTap){
   el.addEventListener('pointerdown', (e)=>{
     if(e.pointerType === 'mouse' && e.button !== 0) return;
-    if(e.target.closest('.starBtn') || e.target.closest('.delLine') || e.target.closest('.editBtn') || e.target.closest('.lineEditBox') || e.target.closest('.lineEditActions')) return;
+    if(e.target.closest('.starBtn') || e.target.closest('.delLine')) return;
     const startX = e.clientX, startY = e.clientY;
     const pointerId = e.pointerId;
     let longPressFired = false;
@@ -1285,7 +922,7 @@ function attachLineDragHandlers(el, onTap){
       moveReorder(ev);
     }
 
-    async function onUp(upEv){
+    async function onUp(){
       clearTimeout(longPressTimer);
       window.removeEventListener('pointermove', onMove);
       window.removeEventListener('pointerup', onUp);
@@ -1333,12 +970,14 @@ function showGrid(){
   homeBtn.classList.remove('show');
   settingsBtn.classList.add('show');
   headerTitle.classList.add('onGrid');
-  headerTitle.innerHTML = '<svg viewBox="0 0 230 60" width="230" height="60"><g transform="translate(0,14)" fill="var(--dim)"><rect x="3" y="9" width="3" height="10" rx="1.5"/><rect x="10.5" y="4" width="3" height="15" rx="1.5"/><rect x="18" y="12" width="3" height="7" rx="1.5"/></g><text id="svgBrandTitle" x="33" y="34" text-anchor="start" font-family="inherit" font-size="23" font-weight="800" letter-spacing="2" fill="currentColor">STAGE LINES</text><text id="svgBrandTagline" x="121" y="52" text-anchor="middle" font-family="inherit" font-size="14" fill="var(--dim)">Say It Right - Every Night</text></svg>';
+  headerTitle.innerHTML = '<svg viewBox="0 0 260 60" width="260" height="60"><g transform="translate(0,14)" fill="var(--dim)"><rect x="3" y="9" width="3" height="10" rx="1.5"/><rect x="10.5" y="4" width="3" height="15" rx="1.5"/><rect x="18" y="12" width="3" height="7" rx="1.5"/></g><text id="svgBrandTitle" x="33" y="34" text-anchor="start" font-family="inherit" font-size="23" font-weight="800" letter-spacing="2" fill="currentColor">STAGE LINES</text><text id="svgBrandTagline" x="121" y="52" text-anchor="middle" font-family="inherit" font-size="14" fill="var(--dim)">Say It Right - Every Night</text><rect id="svgLiteBadgeBg" y="12" width="42" height="18" rx="9" fill="var(--dim)" opacity="0.25"/><text id="svgLiteBadge" y="25" font-family="inherit" font-size="11" font-weight="800" letter-spacing="1" fill="var(--dim)">LITE</text></svg>';
   try{
     const titleEl = document.getElementById('svgBrandTitle');
     const taglineEl = document.getElementById('svgBrandTagline');
     const box = titleEl.getBBox();
     taglineEl.setAttribute('x', box.x + box.width / 2);
+    document.getElementById('svgLiteBadgeBg').setAttribute('x', box.x + box.width + 8);
+    document.getElementById('svgLiteBadge').setAttribute('x', box.x + box.width + 15);
   }catch(err){}
   renderRecentRow();
   buildGrid();
@@ -1379,58 +1018,12 @@ function openCategory(cat){
   renderList();
 }
 
-function startEditingCard(card, textSpan, actions, editCat, index, lineCat, oldText, label){
-  card.classList.add('editing');
-  actions.style.display = 'none';
-
-  const box = document.createElement('textarea');
-  box.className = 'lineEditBox';
-  box.value = oldText;
-
-  const btnRow = document.createElement('div');
-  btnRow.className = 'lineEditActions';
-  const saveBtn = document.createElement('button');
-  saveBtn.className = 'lineEditSave';
-  saveBtn.textContent = 'Save';
-  const cancelBtn = document.createElement('button');
-  cancelBtn.className = 'lineEditCancel';
-  cancelBtn.textContent = 'Cancel';
-  btnRow.appendChild(saveBtn);
-  btnRow.appendChild(cancelBtn);
-
-  textSpan.replaceWith(box);
-  card.insertBefore(btnRow, actions);
-
-  box.focus();
-  box.setSelectionRange(box.value.length, box.value.length);
-
-  const finish = ()=>{ renderList(); };
-
-  saveBtn.addEventListener('click', (e)=>{
-    e.stopPropagation();
-    const newText = box.value.trim();
-    if(!newText){ finish(); return; }
-    if(isCustomCat(editCat)){
-      config.customCategories[editCat].lines[index] = newText;
-      saveConfig();
-    } else {
-      editDefaultLine(editCat, oldText, newText, label);
-    }
-    finish();
-  });
-  cancelBtn.addEventListener('click', (e)=>{
-    e.stopPropagation();
-    finish();
-  });
-  box.addEventListener('click', (e)=> e.stopPropagation());
-}
-
 function renderList(){
   listItems.innerHTML = '';
   listItems.scrollTop = 0;
   const isFav = currentCat === FAV_KEY;
   const isMostUsed = currentCat === MOST_USED_KEY;
-  const readOnly = isFav || isMostUsed;
+  const readOnly = true; // Lite: no adding/editing/deleting lines anywhere
   const data = activeData();
 
   let lines;
@@ -1490,14 +1083,10 @@ function renderList(){
 
     const card = document.createElement('div');
     card.className = 'lineCard' + (used[key] ? ' used' : '');
-    const textSpan = document.createElement('div');
-    textSpan.className = 'lineTextWrap';
-    textSpan.innerHTML = (label ? `<span class="label">${label}</span>` : '') + text + (isMostUsed ? `<span class="label" style="display:block; margin-top:6px; color:var(--dim);">Used ${item.count}x</span>` : '') + (isMostUsed ? '' : '<span class="usedHint">Tap to bring back</span>');
-    card.appendChild(textSpan);
+    card.innerHTML = (label ? `<span class="label">${label}</span>` : '') + text + (isMostUsed ? `<span class="label" style="display:block; margin-top:6px; color:var(--dim);">Used ${item.count}x</span>` : '') + (isMostUsed ? '' : '<span class="usedHint">Tap to bring back</span>');
     card.dataset.lineText = text;
     card.dataset.lineCat = lineCat;
     if(!isMostUsed) attachLineDragHandlers(card, (e)=>{
-      if(e.target.closest('.cardActions') || e.target.closest('.lineEditBox') || e.target.closest('.lineEditActions')) return;
       used[key] = !used[key];
       card.classList.toggle('used');
       if(used[key]){
@@ -1506,29 +1095,7 @@ function renderList(){
       }
     });
 
-    const actions = document.createElement('div');
-    actions.className = 'cardActions';
-
-    const star = document.createElement('button');
-    star.className = 'starBtn';
-    star.textContent = isFavorite(lineCat, text) ? '★' : '☆';
-    star.addEventListener('click', (e)=>{
-      e.stopPropagation();
-      toggleFavorite(lineCat, text, label);
-      renderList();
-    });
-    actions.appendChild(star);
-
     if(!readOnly){
-      const editBtn = document.createElement('button');
-      editBtn.className = 'editBtn';
-      editBtn.textContent = '✎';
-      editBtn.addEventListener('click', (e)=>{
-        e.stopPropagation();
-        startEditingCard(card, textSpan, actions, currentCat, i, lineCat, text, label);
-      });
-      actions.appendChild(editBtn);
-
       const del = document.createElement('button');
       del.className = 'delLine';
       del.textContent = '✕';
@@ -1542,9 +1109,8 @@ function renderList(){
         }
         renderList();
       });
-      actions.appendChild(del);
+      card.appendChild(del);
     }
-    card.appendChild(actions);
     listItems.appendChild(card);
   });
 
@@ -1583,10 +1149,6 @@ function openSettings(){
   renderDisplayTab();
 }
 function closeSettings(){
-  const idleEl = document.getElementById('practiceIdle');
-  const activeEl = document.getElementById('practiceActive');
-  if(idleEl) idleEl.style.display = 'block';
-  if(activeEl) activeEl.style.display = 'none';
   settingsPanel.classList.remove('active');
   showGrid();
 }
@@ -1603,7 +1165,6 @@ document.querySelectorAll('.tabBtn').forEach(btn=>{
 });
 
 function renderLibraryTab(){
-  renderProfilesList();
   libraryList.innerHTML = '';
   const header = document.createElement('div');
   header.style.display = 'flex';
@@ -1630,59 +1191,6 @@ function renderLibraryTab(){
     libraryList.appendChild(row);
   });
 }
-
-function renderProfilesList(){
-  profilesList.innerHTML = '';
-  const names = Object.keys(config.gigProfiles);
-  if(!names.length){
-    const empty = document.createElement('div');
-    empty.className = 'lcount';
-    empty.style.marginBottom = '8px';
-    empty.textContent = 'No profiles saved yet.';
-    profilesList.appendChild(empty);
-    return;
-  }
-  names.forEach(name=>{
-    const chip = document.createElement('div');
-    chip.className = 'profileChip';
-    chip.innerHTML = `<button class="profileApply">${name}</button><button class="profileDelete">✕</button>`;
-    chip.querySelector('.profileApply').addEventListener('click', ()=> applyProfile(name));
-    chip.querySelector('.profileDelete').addEventListener('click', ()=>{
-      delete config.gigProfiles[name];
-      saveConfig();
-      renderProfilesList();
-    });
-    profilesList.appendChild(chip);
-  });
-}
-
-function applyProfile(name){
-  const profile = config.gigProfiles[name];
-  if(!profile) return;
-  config.disabledDefaults = [...profile.disabledDefaults];
-  Object.keys(profile.customEnabled || {}).forEach(cat=>{
-    if(config.customCategories[cat]) config.customCategories[cat].enabled = profile.customEnabled[cat];
-  });
-  saveConfig();
-  renderLibraryTab();
-  renderCustomTab();
-  buildGrid();
-}
-
-saveProfileBtn.addEventListener('click', ()=>{
-  const name = prompt('Name this profile, e.g. "Wedding" or "Pub Gig":');
-  if(!name || !name.trim()) return;
-  const customEnabled = {};
-  Object.keys(config.customCategories).forEach(cat=>{
-    customEnabled[cat] = config.customCategories[cat].enabled;
-  });
-  config.gigProfiles[name.trim()] = {
-    disabledDefaults: [...config.disabledDefaults],
-    customEnabled
-  };
-  saveConfig();
-  renderProfilesList();
-});
 
 function renderCustomTab(){
   customList.innerHTML = '';
@@ -1724,127 +1232,6 @@ function renderCustomTab(){
   });
 }
 
-newCatBtn.addEventListener('click', ()=>{
-  const name = newCatName.value.trim();
-  if(!name) return;
-  if(DEFAULTS[name] || config.customCategories[name]){
-    alert('That category name already exists.');
-    return;
-  }
-  config.customCategories[name] = { lines: [], enabled: true };
-  saveConfig();
-  newCatName.value = '';
-  renderCustomTab();
-});
-
-/* ---------- Practice Room ---------- */
-let commonBag = [];
-let obscureBag = [];
-let currentScenario = null;
-let shownLinesForScenario = new Set();
-let currentRevealCategory = null;
-let currentRevealText = null;
-
-function shuffle(arr){
-  const copy = arr.slice();
-  for(let i = copy.length - 1; i > 0; i--){
-    const j = Math.floor(Math.random() * (i + 1));
-    [copy[i], copy[j]] = [copy[j], copy[i]];
-  }
-  return copy;
-}
-
-function getCategoryLines(category){
-  if(Object.prototype.hasOwnProperty.call(config.customCategories, category)){
-    return config.customCategories[category].lines || [];
-  }
-  return effectiveDefaultLines(category);
-}
-
-function pickScenario(){
-  const commonPool = CHALLENGE_SCENARIOS.filter(s => s.tier === 'common');
-  const obscurePool = CHALLENGE_SCENARIOS.filter(s => s.tier === 'obscure');
-  const wantCommon = (Math.random() < 0.75 && commonPool.length) || !obscurePool.length;
-
-  if(wantCommon && commonPool.length){
-    if(!commonBag.length) commonBag = shuffle(commonPool);
-    return commonBag.pop();
-  }
-  if(!obscureBag.length) obscureBag = shuffle(obscurePool.length ? obscurePool : commonPool);
-  return obscureBag.pop();
-}
-
-function pickRevealLine(category, exclude){
-  let pool = getCategoryLines(category);
-  let actualCategory = category;
-  if(!pool || !pool.length){
-    const allData = activeData();
-    const fallbackCats = Object.keys(allData).filter(c => allData[c] && allData[c].length);
-    if(!fallbackCats.length) return null;
-    actualCategory = fallbackCats[Math.floor(Math.random() * fallbackCats.length)];
-    pool = allData[actualCategory];
-  }
-  const texts = pool.map(item => typeof item === 'object' ? item.text : item);
-  let candidates = texts.filter(t => !exclude.has(t));
-  if(!candidates.length) candidates = texts;
-  const text = candidates[Math.floor(Math.random() * candidates.length)];
-  return { text, category: actualCategory };
-}
-
-function promoteLineToTop(category, text){
-  const pool = getCategoryLines(category) || [];
-  const baseOrder = (config.lineOrder[category] && config.lineOrder[category].length)
-    ? config.lineOrder[category].slice()
-    : pool.map(item => typeof item === 'object' ? item.text : item);
-  const withoutText = baseOrder.filter(t => t !== text);
-  config.lineOrder[category] = [text, ...withoutText];
-  saveConfig();
-}
-
-function startScenario(){
-  currentScenario = pickScenario();
-  shownLinesForScenario = new Set();
-  document.getElementById('practiceIdle').style.display = 'none';
-  document.getElementById('practiceActive').style.display = 'block';
-  document.getElementById('practiceScenarioText').textContent = currentScenario.text;
-  document.getElementById('practiceReveal').style.display = 'none';
-  document.getElementById('practiceRevealBtn').style.display = 'block';
-  document.getElementById('practiceNextBtn').style.display = 'none';
-  document.getElementById('practiceFavConfirm').style.display = 'none';
-}
-
-function showReveal(){
-  const result = pickRevealLine(currentScenario.category, shownLinesForScenario);
-  document.getElementById('practiceFavConfirm').style.display = 'none';
-  if(!result){
-    currentRevealCategory = null;
-    currentRevealText = null;
-    document.getElementById('practiceRevealText').textContent = 'No lines available right now, try enabling a few more categories.';
-    document.getElementById('practiceReveal').style.display = 'block';
-    document.getElementById('practiceRevealBtn').style.display = 'none';
-    document.getElementById('practiceNextBtn').style.display = 'block';
-    return;
-  }
-  currentRevealCategory = result.category;
-  currentRevealText = result.text;
-  shownLinesForScenario.add(result.text);
-  document.getElementById('practiceRevealText').textContent = result.text;
-  document.getElementById('practiceReveal').style.display = 'block';
-  document.getElementById('practiceRevealBtn').style.display = 'none';
-  document.getElementById('practiceNextBtn').style.display = 'block';
-}
-
-document.getElementById('practiceStartBtn').addEventListener('click', startScenario);
-document.getElementById('practiceRevealBtn').addEventListener('click', showReveal);
-document.getElementById('practiceNextBtn').addEventListener('click', startScenario);
-document.getElementById('practiceSkipBtn').addEventListener('click', showReveal);
-document.getElementById('practiceFavBtn').addEventListener('click', ()=>{
-  if(!currentRevealCategory || !currentRevealText) return;
-  promoteLineToTop(currentRevealCategory, currentRevealText);
-  const confirmEl = document.getElementById('practiceFavConfirm');
-  confirmEl.textContent = `Moved to the top of "${currentRevealCategory}" for next time.`;
-  confirmEl.style.display = 'block';
-});
 
 function renderDisplayTab(){
   fontSlider.value = config.fontSize;
@@ -1900,7 +1287,7 @@ importFile.addEventListener('change', ()=>{
     try{
       const imported = JSON.parse(e.target.result);
       config = Object.assign(
-        { disabledDefaults:[], customCategories:{}, fontSize:30, theme:'amber', categoryOrder:[], favorites:[], removedDefaultLines:{}, addedDefaultLines:{}, editedDefaultLines:{}, lineOrder:{}, gigProfiles:{}, lineUsageCounts:{}, recentCategories:[], unlocked:true },
+        { disabledDefaults:[], customCategories:{}, fontSize:30, theme:'amber', categoryOrder:[], favorites:[], removedDefaultLines:{}, addedDefaultLines:{}, lineOrder:{}, gigProfiles:{}, lineUsageCounts:{}, recentCategories:[] },
         imported
       );
       Object.keys(config.customCategories || {}).forEach(cat=>{
@@ -1937,43 +1324,18 @@ feedbackDone.addEventListener('click', ()=>{
 /* ---------- offline support: register the service worker ---------- */
 if('serviceWorker' in navigator){
   window.addEventListener('load', ()=>{
-    navigator.serviceWorker.register('./sw.js').catch(()=>{});
+    navigator.serviceWorker.register('./sw-lite.js').catch(()=>{});
   });
 }
 
 /* ---------- boot ---------- */
 document.documentElement.style.setProperty('--line-font-size', config.fontSize+'px');
 applyTheme();
+showGrid();
 
-const ACCESS_CODE = 'PROMUSO2026'; // change this any time by asking to update it
-
-function proceedPastGate(){
-  document.getElementById('accessGate').classList.add('hide');
-  showGrid();
-  if(!config.hasSeenWelcome){
-    document.getElementById('welcomeScreen').classList.add('show');
-  }
+if(!config.hasSeenWelcome){
+  document.getElementById('welcomeScreen').classList.add('show');
 }
-
-if(config.unlocked){
-  document.getElementById('accessGate').classList.add('hide');
-  proceedPastGate();
-} else {
-  document.getElementById('accessCodeSubmit').addEventListener('click', ()=>{
-    const entered = document.getElementById('accessCodeInput').value.trim().toUpperCase();
-    if(entered === ACCESS_CODE){
-      config.unlocked = true;
-      saveConfig();
-      proceedPastGate();
-    } else {
-      document.getElementById('accessCodeError').style.display = 'block';
-    }
-  });
-  document.getElementById('accessCodeInput').addEventListener('keydown', (e)=>{
-    if(e.key === 'Enter') document.getElementById('accessCodeSubmit').click();
-  });
-}
-
 document.getElementById('welcomeStart').addEventListener('click', ()=>{
   config.hasSeenWelcome = true;
   saveConfig();
